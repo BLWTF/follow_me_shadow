@@ -37,59 +37,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  Offset? mousePosition;
+  Offset mousePosition = const Offset(0, 0);
   bool showShadow = false;
-  // late OverlayEntry entry;
-  // late AnimationController controller;
 
   @override
   void initState() {
     super.initState();
-    // controller = AnimationController(
-    //   vsync: this,
-    //   duration: const Duration(milliseconds: 1000),
-    // );
-  }
-
-  Future<void> followMouse(Offset newMousePosition) async {
-    // final animation = controller.drive(
-    //   Tween<Offset>(
-    //     begin: mousePosition ?? const Offset(0, 0),
-    //     end: newMousePosition,
-    //   ),
-    // );
-    setState(() {
-      showShadow = false;
-      // entry = OverlayEntry(
-      //   builder: (context) {
-      //     return AnimatedBuilder(
-      //       animation: animation,
-      //       builder: (context, child) => Positioned(
-      //         top: animation.value.dy,
-      //         left: animation.value.dx,
-      //         child: widget.mouseShadow,
-      //       ),
-      //     );
-      //   },
-      // );
-    });
-    // controller.forward(from: 0);
-    setState(() {
-      // showShadow = true;
-      mousePosition = newMousePosition;
-    });
-    setState(() {
-      showShadow = true;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (event) {},
-      onHover: (event) async {
-        await Future.delayed(const Duration(milliseconds: 150));
-        await followMouse(event.localPosition);
+      onEnter: (event) {
+        setState(() {
+          showShadow = true;
+        });
+      },
+      onHover: (event) {
+        setState(() {
+          mousePosition = event.position;
+        });
       },
       child: Stack(
         children: [
@@ -108,12 +75,16 @@ class _MyHomePageState extends State<MyHomePage>
               ),
             ),
           ),
-          if (showShadow)
-            Positioned(
-              top: mousePosition?.dy,
-              left: mousePosition?.dx,
+          AnimatedPositioned(
+            top: mousePosition.dy - 5,
+            left: mousePosition.dx - 5,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            child: Opacity(
+              opacity: showShadow == true ? 1 : 0,
               child: widget.mouseShadow,
             ),
+          ),
         ],
       ),
     );
