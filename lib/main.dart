@@ -31,8 +31,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> {
   Offset mousePosition = const Offset(0, 0);
   bool showShadow = false;
   Size shadowSize = const Size(15, 15);
